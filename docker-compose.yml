@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14
+    container_name: apicurio-postgres
+    environment:
+      POSTGRES_DB: registry
+      POSTGRES_USER: registry
+      POSTGRES_PASSWORD: registry
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  apicurio-registry:
+    image: apicurio/apicurio-registry-sql:latest
+    container_name: apicurio-registry
+    ports:
+      - "8080:8080"
+    environment:
+      - REGISTRY_DATASOURCE_URL=jdbc:postgresql://postgres:5432/registry
+      - REGISTRY_DATASOURCE_USERNAME=registry
+      - REGISTRY_DATASOURCE_PASSWORD=registry
+      - REGISTRY_UI_FEATURES_READONLY=false
+      - QUARKUS_PROFILE=prod
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_APICURIO_URL=http://localhost:8080/apis/registry/v2
+    depends_on:
+      - apicurio-registry
+
+volumes:
+  pg_data:
