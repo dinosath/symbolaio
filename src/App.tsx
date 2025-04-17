@@ -1,11 +1,21 @@
-import { Button } from "@/components/ui/button"
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import SchemaListPage from './pages/SchemaListPage';
+import SchemaEditorPage from './pages/SchemaEditorPage';
+import NotFound from './pages/notFound';
+import Tasks from './pages/tasks';
 
-function App() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <Button>Click me</Button>
-    </div>
-  )
-}
+const App: React.FC = () => {
+    return (
+      <Router>
+      <Routes>
+          <Route path="/" element={<SchemaListPage />} />
+          <Route path="/models/:id" element={<SchemaEditorPage />} />
+          <Route path="/models/new" element={<SchemaEditorPage />} />
+          <Route path="*" element={<NotFound />} />
+      </Routes>
+  </Router>
+);
+};
 
-export default App
+export default App;

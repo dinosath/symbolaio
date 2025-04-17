@@ -1,41 +1,53 @@
-version: '3.8'
 services:
   postgres:
     image: postgres:14
     container_name: apicurio-postgres
     environment:
-      POSTGRES_DB: registry
-      POSTGRES_USER: registry
-      POSTGRES_PASSWORD: registry
+      POSTGRES_DB: apicurio-registry
+      POSTGRES_USER: apicurio-registry
+      POSTGRES_PASSWORD: apicurio-registry123
     ports:
       - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
 
+  apicurio-registry-ui:
+    image: apicurio/apicurio-registry-ui:3.0.6
+    container_name: apicurio-registry-ui
+    ports:
+      - "8081:8080"
+    environment:
+      - REGISTRY_API_URL=http://localhost:8080/apis/registry/v3
+    depends_on:
+      - apicurio-registry
+
   apicurio-registry:
-    image: apicurio/apicurio-registry-sql:latest
+    image: apicurio/apicurio-registry:3.0.6
     container_name: apicurio-registry
     ports:
       - "8080:8080"
     environment:
-      - REGISTRY_DATASOURCE_URL=jdbc:postgresql://postgres:5432/registry
-      - REGISTRY_DATASOURCE_USERNAME=registry
-      - REGISTRY_DATASOURCE_PASSWORD=registry
-      - REGISTRY_UI_FEATURES_READONLY=false
-      - QUARKUS_PROFILE=prod
+      LOG_LEVEL: DEBUG
+      QUARKUS_HTTP_CORS_ORIGINS: '*'
+      APICURIO_UI_AUTH_OIDC_REDIRECT_URI: "http://localhost:8081"
+      APICURIO_STORAGE_KIND: "sql"
+      APICURIO_STORAGE_SQL_KIND: "postgresql"
+      APICURIO_DATASOURCE_URL: "jdbc:postgresql://postgres/apicurio-registry"
+      APICURIO_DATASOURCE_USERNAME: "apicurio-registry"
+      APICURIO_DATASOURCE_PASSWORD: "apicurio-registry123"
     depends_on:
       - postgres
 
-  frontend:
-    build:
-      context: ./apps/frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_APICURIO_URL=http://localhost:8080/apis/registry/v2
-    depends_on:
-      - apicurio-registry
+#  frontend:
+#    build:
+#      context: ./apps/frontend
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      - NEXT_PUBLIC_APICURIO_URL=http://localhost:8080/apis/registry/v2
+#    depends_on:
+#      - apicurio-registry
 
 volumes:
   pg_data:
