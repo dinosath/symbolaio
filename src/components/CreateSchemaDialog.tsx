@@ -3,9 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { RegistryClientFactory } from '@apicurio/apicurio-registry-sdk';
-
-const registryClient = RegistryClientFactory.createRegistryClient('http://localhost:8080/apis/registry/v3');
+import RegistryService from "@/services/RegistryService";
 
 interface CreateSchemaDialogProps {
     isOpen: boolean;
@@ -21,30 +19,12 @@ const CreateSchemaDialog: React.FC<CreateSchemaDialogProps> = ({ isOpen, onClose
     const navigate = useNavigate();
 
     const handleCreateModel = async () => {
-        setIsSubmitting(true);
         try {
-            const createdSchema = await registryClient.groups.byGroupId('default').artifacts.post({
-                name: newModelName,
-                artifactId: newModelName,
-                description: newModelDescription,
-                firstVersion: {
-                    version: '1.0.0',
-                    content: {
-                        content: JSON.stringify({
-                            type: 'object',
-                            title: newModelName,
-                            description: newModelDescription,
-                            properties: {},
-                        }),
-                        contentType: 'application/json',
-                    },
-                },
-            });
-
-            // Navigate to the newly created schema's page
-            navigate(`/schema/${createdSchema?.version?.globalId}`);
-            onSchemaCreated(); // Trigger callback to refresh schema list
-            onClose(); // Close the dialog
+            setIsSubmitting(true);
+            const newSchemaResponse = await RegistryService.createNewJsonSchema(newModelName,newModelDescription);
+            navigate(`/schemas/${newSchemaResponse?.version?.artifactId}`);
+            onSchemaCreated();
+            onClose();
         } catch (error) {
             console.error('Error creating schema:', error);
             setError('Failed to create schema.');

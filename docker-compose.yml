@@ -28,6 +28,7 @@ services:
       - "8080:8080"
     environment:
       LOG_LEVEL: DEBUG
+      QUARKUS_HTTP_CORS_ENABLED: "false"
       QUARKUS_HTTP_CORS_ORIGINS: '*'
       APICURIO_UI_AUTH_OIDC_REDIRECT_URI: "http://localhost:8081"
       APICURIO_STORAGE_KIND: "sql"
@@ -37,17 +38,6 @@ services:
       APICURIO_DATASOURCE_PASSWORD: "apicurio-registry123"
     depends_on:
       - postgres
-
-#  frontend:
-#    build:
-#      context: ./apps/frontend
-#      dockerfile: Dockerfile
-#    ports:
-#      - "3000:3000"
-#    environment:
-#      - NEXT_PUBLIC_APICURIO_URL=http://localhost:8080/apis/registry/v2
-#    depends_on:
-#      - apicurio-registry
 
 volumes:
   pg_data:
