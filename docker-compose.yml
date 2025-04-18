@@ -39,5 +39,16 @@ services:
     depends_on:
       - postgres
 
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8082:80"
+    environment:
+      - REGISTRY_API_URL=http://apicurio-registry:8080/apis/registry/v3
+    depends_on:
+      - apicurio-registry
+
 volumes:
   pg_data:

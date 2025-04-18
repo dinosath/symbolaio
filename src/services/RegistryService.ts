@@ -1,5 +1,5 @@
 import { RegistryClientFactory } from "@apicurio/apicurio-registry-sdk";
-import type { ArtifactMetaData, ArtifactSearchResults, CreateArtifactResponse, SearchedArtifact, VersionSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import type { ArtifactMetaData, CreateArtifactResponse, SearchedArtifact, VersionSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import { JSONSchema7 } from 'json-schema';
 
 class RegistryService {
@@ -110,6 +110,15 @@ class RegistryService {
             console.error("Error updating schema by ID:", error);
             throw error;
         }        
+    }
+
+    async deleteSchema(groupId: string, artifactId: string): Promise<void> {
+        try {
+            await this.client.groups.byGroupId(groupId).artifacts.byArtifactId(artifactId).delete();
+        } catch (error) {
+            console.error("Error deleting schema by ID:", error);
+            throw error;
+        }
     }
 }
 

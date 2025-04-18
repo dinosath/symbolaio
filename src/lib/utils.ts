@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { JSONSchema7 } from "json-schema";
+import { JSONSchema7, JSONSchema7TypeName } from "json-schema";
 
 export type ChangeType = "major" | "minor" | "none";
 
@@ -37,7 +37,7 @@ export const compareJsonSchemas = (oldSchema: JSONSchema7, newSchema: JSONSchema
 };
 
 export const incrementVersion = (currentVersion: string, changeType: ChangeType): string => {
-  const [major, minor, patch] = currentVersion.split(".").map(Number);
+  const [major, minor] = currentVersion.split(".").map(Number);
 
   if (changeType === "major") {
       return `${major + 1}.0.0`; // Increment major, reset minor and patch
@@ -68,7 +68,7 @@ export const addFieldToSchema = (
   }
 
   // Add the new field
-  updatedSchema.properties[fieldName] = { type: fieldType };
+  updatedSchema.properties[fieldName] = { type: fieldType as JSONSchema7TypeName };
 
   return updatedSchema;
 };

@@ -80,7 +80,11 @@ const SchemaListPage: React.FC = () => {
                         <DropdownMenuItem
                             onClick={async () => {
                                 try {
-                                    await RegistryService.deleteSchema("default", row.original?.artifactId);
+                                    if (row.original?.artifactId) {
+                                        await RegistryService.deleteSchema("default", row.original.artifactId);
+                                    } else {
+                                        console.error("Artifact ID is missing or invalid.");
+                                    }
                                     loadSchemas();
                                 } catch (error) {
                                     console.error("Error deleting schema:", error);

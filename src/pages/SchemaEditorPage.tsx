@@ -45,9 +45,9 @@ const SchemaEditorPage: React.FC = () => {
                         ?.filter((x) => x.artifactType === 'JSON')
                         .map((x) => x.version) || [];
                     console.log('Fetched versions:', versionList);
-                    setVersions(versionList || []);
+                    setVersions((versionList || []).filter((version): version is string => !!version));
                     if (versionList.length > 0) {
-                        setSelectedVersion(versionList[0]); // Default to the first version
+                        setSelectedVersion(versionList[0] || ''); // Default to the first version or fallback to an empty string
                     }
                 } catch (error) {
                     console.error('Error fetching artifact versions:', error);
@@ -65,11 +65,13 @@ const SchemaEditorPage: React.FC = () => {
                 try {
                     const loadedSchema = await RegistryService.fetchJsonSchema('default', artifactId, selectedVersion);
                     console.log('Loaded schema for version:', selectedVersion, loadedSchema);
-                    const deepCopiedSchema = JSON.parse(JSON.stringify(loadedSchema));
-                    setCurrentSchema(deepCopiedSchema); // Save the original schema
-                    setSchema(loadedSchema); // Initialize the editable schema
-                    setName(loadedSchema.title || '');
-                    setDescription(loadedSchema.description || '');
+                    if (loadedSchema) {
+                        const deepCopiedSchema = JSON.parse(JSON.stringify(loadedSchema));
+                        setCurrentSchema(deepCopiedSchema);
+                        setSchema(loadedSchema);
+                        setName(loadedSchema.title || '');
+                        setDescription(loadedSchema.description || '');
+                    }
                 } catch (error) {
                     console.error('Error loading schema for version:', error);
                 }

@@ -1,54 +1,85 @@
-# React + TypeScript + Vite
+# Symbolaio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Symbolaio is a modern web-based application designed for managing and editing JSON schemas. It provides a user-friendly interface for creating, editing, and versioning schemas, making it easier to manage data contracts in your projects.
 
-Currently, two official plugins are available:
+## Origin of the Name
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The name **Symbolaio** is derived from the Greek word **συμβόλαιο** (pronounced *symvolaio*), which means **contract**. This reflects the application's purpose of managing **data contracts** in the form of JSON schemas, ensuring consistency and reliability in data exchange between systems.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Schema Management**: Create, edit, and delete JSON schemas.
+- **Versioning**: Manage multiple versions of schemas with automatic version increment based on changes.
+- **Field Management**: Add, update, and remove fields in schemas with ease.
+- **Change Detection**: Detect breaking and non-breaking changes in schemas.
+- **User-Friendly Interface**: Intuitive UI for managing schemas and their metadata.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Technology Stack
+
+- **Frontend**: React with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Shadcn + TailwindCSS
+- **Backend Integration**: Axios for API communication with [Apicurio Registry](https://www.apicur.io/registry/)
+
+## Backend Integration
+
+Symbolaio uses [Apicurio Registry](https://www.apicur.io/registry/) for storing and managing JSON schemas. Apicurio Registry is a powerful tool for managing schema versions and ensuring compatibility in distributed systems. It provides a robust API for schema storage, retrieval, and validation, which Symbolaio leverages to deliver a seamless schema management experience.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or later)
+- Docker (optional, for containerized deployment)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo/symbolaio.git
+   cd symbolaio
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:3000`.
+
+### Building the Application
+
+To build the application for production:
+
+```bash
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The build output will be located in the `dist` directory.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Running with Docker
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+1. Build the Docker image:
+   ```bash
+   docker build -t symbolaio .
+   ```
+
+2. Run the Docker container:
+   ```bash
+   docker run -p 8080:80 symbolaio
+   ```
+
+3. Access the application at `http://localhost:8080`.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
