@@ -1,0 +1,33 @@
+logger:
+  enable: {{ get_env(name="LOGGER_ENABLE", default="true") }}
+  pretty_backtrace: true
+  level: {{ get_env(name="LOGGER_LEVEL", default="info") }}
+  format: compact
+server:
+  port: {{ get_env(name="SERVER_PORT", default="5150") }}
+  host: {{ get_env(name="SERVER_HOST", default="http://localhost") }}
+  middlewares:
+    fallback:
+      enable: false
+    static:
+      enable: true
+      must_exist: true
+      precompressed: false
+      folder:
+        uri: "/"
+        path: "frontend/dist"
+      fallback: "frontend/dist/index.html"
+database:
+  uri: {{ get_env(name="DATABASE_URL", default="postgres://postgres:postgres@localhost:5432/postgres") }}
+  enable_logging: false
+  connect_timeout: {{ get_env(name="DB_CONNECT_TIMEOUT", default="500") }}
+  idle_timeout: 500
+  min_connections: 1
+  max_connections: 1
+  auto_migrate: true
+  dangerously_truncate: false
+  dangerously_recreate: false
+auth:
+  jwt:
+    secret: {{ get_env(name="JWT_SECRET", default="secret") }}
+    expiration: {{ get_env(name="JWT_EXPIRATION", default="604800") }}
