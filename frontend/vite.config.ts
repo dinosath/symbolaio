@@ -1,35 +1,19 @@
-import path from 'path'
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import tailwindcss from '@tailwindcss/vite'
-import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    TanStackRouterVite({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-
-      // fix loading all icon chunks in dev mode
-      // https://github.com/tabler/tabler-icons/issues/1233
-      '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
     },
   },
   server: {
+    port: 3000,
     proxy: {
-      '/api': {
-        target: 'http://localhost:5150',
-        changeOrigin: true,
-        secure: false,
-      },
+      '/graphql': 'http://localhost:8080',
+      '/api': 'http://localhost:8080',
     },
   },
-})
+});

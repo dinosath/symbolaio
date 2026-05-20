@@ -1,0 +1,72 @@
+syntax = "proto3";
+package symbolaio.identity.v1;
+
+message User {
+  string id = 1;
+  string email = 2;
+  string display_name = 3;
+  string created_at = 4;
+}
+
+message Workspace {
+  string id = 1;
+  string name = 2;
+  string owner_id = 3;
+  string created_at = 4;
+}
+
+message AuthResponse {
+  string access_token = 1;
+  string user_id = 2;
+}
+
+// --- Requests ---
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string display_name = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  bool valid = 1;
+  string user_id = 2;
+  string email = 3;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message CreateWorkspaceRequest {
+  string name = 1;
+  string owner_id = 2;
+}
+
+message ListWorkspacesRequest {
+  string user_id = 1;
+}
+
+message ListWorkspacesResponse {
+  repeated Workspace workspaces = 1;
+}
+
+// --- Service ---
+
+service IdentityService {
+  rpc Register(RegisterRequest) returns (AuthResponse);
+  rpc Login(LoginRequest) returns (AuthResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc CreateWorkspace(CreateWorkspaceRequest) returns (Workspace);
+  rpc ListWorkspaces(ListWorkspacesRequest) returns (ListWorkspacesResponse);
+}

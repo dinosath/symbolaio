@@ -1,0 +1,24 @@
+[package]
+name = "symbolaio-operator"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+kube = { workspace = true }
+k8s-openapi = { workspace = true }
+schemars = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+reqwest = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+dotenvy = { workspace = true }
+openapiv3 = { workspace = true }
+thiserror = { workspace = true }
+
+futures = { workspace = true }

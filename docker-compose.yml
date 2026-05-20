@@ -1,46 +1,29 @@
 services:
   postgres:
-    container_name: postgres
-    image: postgres:alpine
+    image: postgres:16-alpine
     environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER}']
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      POSTGRES_DB: symbolaio
+      POSTGRES_USER: symbolaio
+      POSTGRES_PASSWORD: symbolaio
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U symbolaio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  apicurio-registry-ui:
-    image: apicurio/apicurio-registry-ui:3.0.6
-    container_name: apicurio-registry-ui
+  nats:
+    image: nats:2-alpine
+    command: ["--jetstream", "--store_dir=/data"]
     ports:
-      - "8081:8080"
-    environment:
-      - REGISTRY_API_URL=http://localhost:8080/apis/registry/v3
-    depends_on:
-      - apicurio-registry
-
-  apicurio-registry:
-    image: apicurio/apicurio-registry:3.0.6
-    container_name: apicurio-registry
-    ports:
-      - "8080:8080"
-    environment:
-      LOG_LEVEL: DEBUG
-      QUARKUS_HTTP_CORS_ENABLED: "false"
-      QUARKUS_HTTP_CORS_ORIGINS: '*'
-      APICURIO_UI_AUTH_OIDC_REDIRECT_URI: "http://localhost:8081"
-      APICURIO_STORAGE_KIND: "sql"
-      APICURIO_STORAGE_SQL_KIND: "postgresql"
-      APICURIO_DATASOURCE_URL: "jdbc:postgresql://postgres/${POSTGRES_DB}"
-      APICURIO_DATASOURCE_USERNAME: "${POSTGRES_USERNAME}"
-      APICURIO_DATASOURCE_PASSWORD: "${POSTGRES_PASSWORD}"
-    depends_on:
-      - postgres
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - natsdata:/data
 
 volumes:
-  pg_data:
+  pgdata:
+  natsdata:

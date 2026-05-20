@@ -1,0 +1,147 @@
+syntax = "proto3";
+package symbolaio.platform.v1;
+
+// --- Pages ---
+
+message Page {
+  string id = 1;
+  string workspace_id = 2;
+  string parent_id = 3;         // empty if root page
+  string name = 4;
+  string icon = 5;
+  string blocks = 6;            // JSON string of block tree
+  string created_by = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+// --- Data Objects ---
+
+message ObjectSchema {
+  string id = 1;
+  string workspace_id = 2;
+  string service_id = 3;        // empty if user-defined
+  string name = 4;
+  string attributes = 5;        // JSON string
+  string capabilities = 6;      // JSON string
+  string created_at = 7;
+  string updated_at = 8;
+}
+
+message Record {
+  string id = 1;
+  string workspace_id = 2;
+  string object_id = 3;
+  string data = 4;              // JSON string
+  string created_by = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+// --- Service Registry ---
+
+message ServiceInfo {
+  string id = 1;
+  string workspace_id = 2;
+  string name = 3;
+  string endpoint_grpc = 4;
+  string endpoint_rest = 5;
+  string capabilities = 6;      // JSON string
+  string status = 7;
+  string created_at = 8;
+}
+
+message WidgetDef {
+  string id = 1;
+  string service_id = 2;
+  string name = 3;
+  string widget_type = 4;
+  string bundle_url = 5;
+  string config_schema = 6;     // JSON string
+}
+
+// --- Requests ---
+
+message GetPageRequest { string id = 1; }
+message ListPagesRequest {
+  string workspace_id = 1;
+  string parent_id = 2;         // optional filter
+}
+message ListPagesResponse { repeated Page pages = 1; }
+message CreatePageRequest {
+  string workspace_id = 1;
+  string parent_id = 2;
+  string name = 3;
+  string icon = 4;
+  string blocks = 5;            // JSON string
+  string created_by = 6;
+}
+message UpdatePageRequest {
+  string id = 1;
+  string name = 2;
+  string icon = 3;
+  string blocks = 4;            // JSON string
+}
+message DeletePageRequest { string id = 1; }
+message DeleteResponse { bool success = 1; }
+
+message GetObjectSchemaRequest { string id = 1; }
+message ListObjectSchemasRequest { string workspace_id = 1; }
+message ListObjectSchemasResponse { repeated ObjectSchema schemas = 1; }
+message CreateObjectSchemaRequest {
+  string workspace_id = 1;
+  string name = 2;
+  string attributes = 3;        // JSON string
+  string capabilities = 4;      // JSON string
+}
+
+message GetRecordRequest { string id = 1; }
+message ListRecordsRequest {
+  string object_id = 1;
+  string workspace_id = 2;
+  string filter = 3;            // JSON string
+}
+message ListRecordsResponse { repeated Record records = 1; }
+message CreateRecordRequest {
+  string workspace_id = 1;
+  string object_id = 2;
+  string data = 3;              // JSON string
+  string created_by = 4;
+}
+message UpdateRecordRequest {
+  string id = 1;
+  string data = 2;              // JSON string
+}
+message DeleteRecordRequest { string id = 1; }
+
+message ListServicesRequest { string workspace_id = 1; }
+message ListServicesResponse { repeated ServiceInfo services = 1; }
+message ListWidgetsRequest { string workspace_id = 1; }
+message ListWidgetsResponse { repeated WidgetDef widgets = 1; }
+
+// --- Service ---
+
+service PlatformService {
+  // Pages
+  rpc GetPage(GetPageRequest) returns (Page);
+  rpc ListPages(ListPagesRequest) returns (ListPagesResponse);
+  rpc CreatePage(CreatePageRequest) returns (Page);
+  rpc UpdatePage(UpdatePageRequest) returns (Page);
+  rpc DeletePage(DeletePageRequest) returns (DeleteResponse);
+
+  // Object Schemas
+  rpc GetObjectSchema(GetObjectSchemaRequest) returns (ObjectSchema);
+  rpc ListObjectSchemas(ListObjectSchemasRequest) returns (ListObjectSchemasResponse);
+  rpc CreateObjectSchema(CreateObjectSchemaRequest) returns (ObjectSchema);
+
+  // Records
+  rpc GetRecord(GetRecordRequest) returns (Record);
+  rpc ListRecords(ListRecordsRequest) returns (ListRecordsResponse);
+  rpc CreateRecord(CreateRecordRequest) returns (Record);
+  rpc UpdateRecord(UpdateRecordRequest) returns (Record);
+  rpc DeleteRecord(DeleteRecordRequest) returns (DeleteResponse);
+
+  // Service Registry
+  rpc ListServices(ListServicesRequest) returns (ListServicesResponse);
+  rpc ListWidgets(ListWidgetsRequest) returns (ListWidgetsResponse);
+}
